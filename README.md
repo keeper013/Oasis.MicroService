@@ -22,3 +22,9 @@ In the demo code:
 - *Oasis.DemoService2* is a microservice which reads from a sqlite library for demonstrating configuraing database contexts in such microservices
 - *Oasis.DemoWebApi* is the web API host for hosting both microservices
 To run the demo code, execute "*BuildForDemo.ps1*" file under root folder, it contains the steps to build/publish the projects and copy the binaries to relevant paths written in PowerShell script. Then debug *Oasis.DemoWebApi* project. Controller defined for service 1 is under path Service1/Test, controller defined for service 2 is under path Service2/Test
+## Extra Web API supports
+The library also contains some web API supporting classes to make programming easier
+- ByteArrayInputFormatter, this is a formatter to support media type of application/octet-stream, it is useful for controllers receiving byte array html bodies (e.g. output of Google.ProtoBuf). TO use it, simply call builder.Services.AddControllers(options => options.InputFormatters.Add(new ByteArrayInputFormatter())); in Program.cs.
+- CorsConfiguration, this class helps to configure cors for the web API, the way to use it is in the demo code and commented out (considering it's not useful for the demonstration itself).
+- SwaggerConfiguration, is the supporting class to configure swagger for the web API, it simply wraps a little of swagger related code defaulted generated when createing the web API, to make the code a little neater.
+- JwtConfiguration, this class helps to configure the web API to allow Jwt authentication. It's quite troublesome to distribute Jwt and relevant certificates, so the usage of this class will not documented for now. The class may be removed from *Oasis.MicroService* in the future.
