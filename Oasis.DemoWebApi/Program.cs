@@ -14,10 +14,10 @@ config.GetSection("MicroServices").Bind(microServiceAssemblies);
 builder.Services.AddMicroServices(microServiceAssemblies);
 
 // cors
-var corsConfigConfig = new CorsConfiguration.CorsConfig();
-config.GetSection(CorsConfiguration.CorsConfig.SectionName).Bind(corsConfigConfig);
-var corsConfig = new CorsConfiguration(corsConfigConfig);
-corsConfig.ConfigureServices(builder.Services);
+// var corsConfigConfig = new CorsConfiguration.CorsConfig();
+// config.GetSection(CorsConfiguration.CorsConfig.SectionName).Bind(corsConfigConfig);
+// var corsConfig = new CorsConfiguration(corsConfigConfig);
+// corsConfig.ConfigureServices(builder.Services);
 
 // byte[] formatter for protobuf budy
 // builder.Services.AddControllers(options => options.InputFormatters.Add(new ByteArrayInputFormatter()));
@@ -33,7 +33,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 swaggerConfig.Configure(app, app.Environment);
 
-corsConfig.Configure(app, app.Environment);
+// corsConfig.Configure(app, app.Environment);
 
 app.MapControllers();
 
