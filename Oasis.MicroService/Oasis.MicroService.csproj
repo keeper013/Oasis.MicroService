@@ -4,11 +4,27 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<CodeAnalysisRuleSet>../StyleCop/Oasis.Default.ruleset</CodeAnalysisRuleSet>
+	  <CodeAnalysisRuleSet>../StyleCop/Oasis.Default.ruleset</CodeAnalysisRuleSet>
+    <Authors>Cui Ziqiang</Authors>
+    <Version>0.1.0</Version>
+    <Description>This library is still in stablizing phase, it's features and interface may be unstable.</Description>
+    <Copyright>Copyright (c) 2023 Cui Ziqiang</Copyright>
+    <PackageProjectUrl>https://github.com/keeper013/Oasis.MicroService</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/keeper013/Oasis.MicroService</RepositoryUrl>
+    <PackageTags>Web API, MicroService</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
