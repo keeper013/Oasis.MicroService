@@ -16,4 +16,9 @@ To implement the web API host, the following steps should be followed:
 2. In configuration file, define a "*MicroServices*" section to list paths to all micro services to be plugged in.
 3. In Program.cs file, read that section from configuration file, use *AddMicroServices* API to register all micro services.
 Then run the web API service, controllers defined in the microservices should be available.
-##
+## Demo Code
+In the demo code:
+- *Oasis.DemoService1* is one simple microservice to demonstrate the basics of implementing a microservice
+- *Oasis.DemoService2* is a microservice which reads from a sqlite library for demonstrating configuraing database contexts in such microservices
+- *Oasis.DemoWebApi* is the web API host for hosting both microservices
+To run the demo code, execute "*BuildForDemo.ps1*" file under root folder, it contains the steps to build/publish the projects and copy the binaries to relevant paths written in PowerShell script. Then debug *Oasis.DemoWebApi* project. Controller defined for service 1 is under path Service1/Test, controller defined for service 2 is under path Service2/Test
