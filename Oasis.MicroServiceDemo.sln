@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oasis.MicroService", "Oasis.MicroService\Oasis.MicroService.csproj", "{564EC386-0340-401B-8DA5-38B6244FD2F1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oasis.DemoWebApi", "Oasis.DemoWebApi\Oasis.DemoWebApi.csproj", "{48A40442-8198-4164-8F39-AD3617FA48BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oasis.DemoService1", "Oasis.DemoService1\Oasis.DemoService1.csproj", "{2BAC6E23-27BA-44AC-9020-A0D552950585}"
@@ -20,10 +18,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{564EC386-0340-401B-8DA5-38B6244FD2F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{564EC386-0340-401B-8DA5-38B6244FD2F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{564EC386-0340-401B-8DA5-38B6244FD2F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{564EC386-0340-401B-8DA5-38B6244FD2F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{48A40442-8198-4164-8F39-AD3617FA48BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{48A40442-8198-4164-8F39-AD3617FA48BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48A40442-8198-4164-8F39-AD3617FA48BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
