@@ -9,9 +9,8 @@ Of course a natual way to implement this would be to implement all such microser
 ### Micro Service Implementation
 To implement a microservice, the following steps should be followed:
 1. Create a class library project, add reference to Oasis.MicroService, define all necessary interfaces and implementations for features.
-2. Define the context classes of the controllers, which should implement *MicroServiceContext*, if they haven't been defined yet. The context class is the run time context of the controllers, it should be able to expose all necessary configuration and injected dependencies for the controllers.
-3. Define the context builder classes of each context, which should implement *MicroServiceContextBuilder<TContext>*. *MicroServiceContextBuilder<TContext>* class has 2 abstract methods to be implemented, *BuildContext* method initializes and returns context of the service, while *Initialize* method does all dependency injections.
-4. Define controllers of the microservice, and the web APIs inside the controllers. The controllers should implement class *MicroServiceController<TContext>*, *TContext* is the type of context of this controller.
+2. Define the context builder classes for the microservice, which should inherit from abstract class *MicroServiceContextBuilder*. The class has an abstract method named *Initialize*, all dependency injections done with IServiceCollection should be done inside it (don't inject the controllers). Note that 1 microservice assembly should only contain 1 non-abstract class implementing *MicroServiceContextBuilder*.
+3. Define controllers of the microservice, and the web APIs inside the controllers. The controllers should implement class *Controller*. Note that all controllers defined in the microservice assembly will resolved using the service provider built from the IServiceController interface built in step 2.
 ### Web Host Implementation
 To implement the web API host, the following steps should be followed:
 1. Create a web API project, add reference to Oasis.MicroService.
@@ -30,3 +29,5 @@ The library also contains some web API supporting classes to make programming ea
 - CorsConfiguration, this class helps to configure cors for the web API, the way to use it is in the demo code and commented out (considering it's not useful for the demonstration itself).
 - SwaggerConfiguration, is the supporting class to configure swagger for the web API, it simply wraps a little of swagger related code defaulted generated when createing the web API, to make the code a little neater.
 - JwtConfiguration, this class helps to configure the web API to allow Jwt authentication. It's quite troublesome to distribute Jwt and relevant certificates, so the usage of this class will not documented for now. The class may be removed from *Oasis.MicroService* in the future.
+## Considerations
+- Different microservices may depend on the same packages, sometimes with different versions. So it's highly recommended that all dependency dlls are strong named, or else there will be assembly version conflicts among the microservices deployed under the same host.

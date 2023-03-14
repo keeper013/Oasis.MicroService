@@ -3,21 +3,24 @@ namespace Oasis.DemoService2;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Oasis.MicroService;
 
 [ApiController]
 [Route("[controller]")]
-public sealed class Service2Controller : MicroServiceController<Service2Context>
+public sealed class Service2Controller : Controller
 {
-	public Service2Controller(Service2Context context)
-		: base(context)
+	public readonly IService2DemoService _service;
+	public readonly DatabaseContext _databaseContext;
+
+	public Service2Controller(IService2DemoService service, DatabaseContext context)
 	{
+		_service = service;
+		_databaseContext = context;
 	}
 
 	[AllowAnonymous]
 	[HttpGet(nameof(Test))]
 	public ActionResult Test()
 	{
-		return Ok($"{Context.DemoService.Description} {Context.DatabaseContext.Services.FromSql($"Select Name From Service").First().Name!}");
+		return Ok($"{_service.Description} {_databaseContext.Services.FromSql($"Select Name From Service").First().Name!}");
 	}
 }

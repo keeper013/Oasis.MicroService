@@ -2,21 +2,24 @@ namespace Oasis.DemoService1;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Oasis.MicroService;
 
 [ApiController]
 [Route("[controller]")]
-public sealed class Service1Controller : MicroServiceController<Service1Context>
+public sealed class Service1Controller : Controller
 {
-	public Service1Controller(Service1Context context)
-		: base(context)
+	private readonly IService1DemoService _service;
+	private readonly IService1Configuration _config;
+
+	public Service1Controller(IService1DemoService service, IService1Configuration config)
 	{
+		_service = service;
+		_config = config;
 	}
 
 	[AllowAnonymous]
 	[HttpGet(nameof(Test))]
 	public ActionResult Test()
 	{
-		return Ok($"{Context.DemoService.Description} {Context.Configuration.ServiceName}");
+		return Ok($"{_service.Description} {_config.ServiceName}");
 	}
 }

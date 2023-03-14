@@ -2,3 +2,4 @@ dotnet add package Microsoft.Extensions.DependencyInjection
 dotnet add package Microsoft.AspNetCore.Mvc.Core
 dotnet add package Microsoft.EntityFrameworkCore
 dotnet add package Microsoft.EntityFrameworkCore.Sqlite
+dotnet add package SQLitePCLRaw.bundle_e_sqlite3

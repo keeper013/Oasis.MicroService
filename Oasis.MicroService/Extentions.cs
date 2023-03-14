@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public static class Extentions
 {
@@ -20,25 +22,23 @@ public static class Extentions
 		{
 			var fullAssemblyPath = Path.Combine(executionAssemblyDirectory, assemblyPath);
 			var assembly = Assembly.LoadFrom(fullAssemblyPath);
-			foreach (var type in assembly.GetExportedTypes()
-				.Where(t => t.IsClass && IsMicroServiceContextBuilder(t) && !t.IsAbstract))
+			var serviceContextBuilderType = assembly.GetExportedTypes().Single(t => t.IsClass && TypeIsSubType(t, typeof(MicroServiceContextBuilder)) && !t.IsAbstract);
+			var constructor = serviceContextBuilderType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, new Type[0]);
+			if (constructor == null)
 			{
-				var constructor = type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, new Type[0]);
-				var buildContextMethod = type.GetMethod(MicroServiceContextBuilder.BuildContextMethod, BindingFlags.NonPublic | BindingFlags.Instance)!;
-				var buildMethod = typeof(MicroServiceContextBuilder<>).MakeGenericType(buildContextMethod.ReturnType)
-					.GetMethod(MicroServiceContextBuilder.BuildMethodName, BindingFlags.Public | BindingFlags.Instance);
-				if (constructor != null && buildMethod != null)
-                {
-					var builder = constructor.Invoke(new object[0]);
-					services.AddSingleton(buildMethod.ReturnType, buildMethod.Invoke(builder, new object[] { services })!);
-                }
-				else
-				{
-					throw new ArgumentException($"Type {type.FullName} doesn't have a parameterless constructor or Build method.", nameof(assemblies));
-				}
+				throw new ArgumentException($"Type {serviceContextBuilderType.FullName} doesn't have a constructor that has no input parameter.", nameof(assemblies));
 			}
 
-			services.AddMvc().AddApplicationPart(assembly);
+			var builder = constructor.Invoke(new object[0]);
+			var buildMethod = typeof(MicroServiceContextBuilder).GetMethod(nameof(MicroServiceContextBuilder.Build), BindingFlags.Public | BindingFlags.Instance)!;
+			var controllerTypes = assembly.GetExportedTypes().Where(t => t.IsClass && !t.IsAbstract && TypeIsSubType(t, typeof(Controller))).ToList();
+			ServiceProvider serviceProvider = (ServiceProvider)buildMethod.Invoke(builder, new object[] { controllerTypes })!;
+
+			services.AddMvc().AddApplicationPart(assembly).AddControllersAsServices();
+			foreach (var controllerType in controllerTypes)
+			{
+				services.Replace(new ServiceDescriptor(controllerType, sp => serviceProvider.GetService(controllerType)!, ServiceLifetime.Transient));
+			}
 		}
 	}
 
@@ -49,21 +49,20 @@ public static class Extentions
 		return Path.GetDirectoryName(path)!;
 	}
 
-	private static bool IsMicroServiceContextBuilder(Type type)
+	private static bool TypeIsSubType(Type type, Type parentType)
 	{
 		var objectType = typeof(object);
-		var microServiceContextBuilderType = typeof(MicroServiceContextBuilder<>);
-		var baseType = type.BaseType;
-		while (baseType != objectType && baseType != null)
+		var baseType = type;
+		while (baseType != parentType)
 		{
-			if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == microServiceContextBuilderType)
+			if (baseType == objectType || baseType == null)
 			{
-				return true;
+				return false;
 			}
 
 			baseType = baseType.BaseType;
 		}
 
-		return false;
+		return true;
 	}
 }
