@@ -7,10 +7,9 @@ An example use case: I've built a microservice asp.net core web API named *servi
 Of course a natual way to implement this would be to implement all such microservices as separate web API projects, and run multiple web APIs with different ports on the same host. The concern about this approach is we may end up using 10 or 20 different ports on the same host, which is simply too many to remember or manage. Hence Oasis.MicroService library would help to publish the microservices as class libraries projects instead of web API projects, and allowing the contents of the microservices to be easily deployed under the same web apo project.
 ## Usage & APIs
 ### Micro Service Implementation
-To implement a microservice, the following steps should be followed:
-1. Create a class library project, add reference to Oasis.MicroService, define all necessary interfaces and implementations for features.
-2. Define the context builder classes for the microservice, which should inherit from abstract class *MicroServiceContextBuilder*. The class has an abstract method named *Initialize*, all dependency injections done with IServiceCollection should be done inside it (don't inject the controllers). Note that 1 microservice assembly should only contain 1 non-abstract class implementing *MicroServiceContextBuilder*.
-3. Define controllers of the microservice, and the web APIs inside the controllers. The controllers should implement class *Controller*. Note that all controllers defined in the microservice assembly will resolved using the service provider built from the IServiceController interface built in step 2.
+To implement a microservice, the following steps should be carried out:
+1. Create a class library project, add reference to Oasis.MicroService. Define all controllers of the microservice in this project, add the web APIs inside the controllers. Define all necessary interfaces and implementations for features.
+2. Define the context builder classes for the microservice, which should inherit from abstract class *MicroServiceContextBuilder*. The class has an abstract method named *Initialize*, all dependency injections done with IServiceCollection should be done inside it (All controllers defined in the microservice assembly will be resolved using the service provider built from this IServiceController interface, but don't inject the controllers manually, it's taken care of automatically). Note that 1 microservice assembly should only contain 1 non-abstract class implementing *MicroServiceContextBuilder*.
 ### Web Host Implementation
 To implement the web API host, the following steps should be followed:
 1. Create a web API project, add reference to Oasis.MicroService.
