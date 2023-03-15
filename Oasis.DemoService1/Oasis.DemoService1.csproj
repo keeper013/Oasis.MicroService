@@ -1,18 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Oasis.MicroService" Version="0.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Oasis.DemoService1.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Oasis.MicroService\Oasis.MicroService.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
