@@ -10,29 +10,45 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public static class Extentions
 {
-	public static void AddMicroServices(this IServiceCollection services, IList<string> assemblies)
+	public static void AddMicroServices(this IServiceCollection services, IList<MicroServiceConfiguration> configurations)
 	{
-		if (assemblies == null || !assemblies.Any())
+		if (configurations == null || !configurations.Any())
 		{
-			throw new ArgumentNullException(nameof(assemblies));
+			throw new ArgumentNullException(nameof(configurations));
 		}
 
 		var executionAssemblyDirectory = Path.GetDirectoryName(Uri.UnescapeDataString(new UriBuilder(Assembly.GetExecutingAssembly().Location).Path))!;
-		foreach (var assemblyPath in assemblies)
+		foreach (var config in configurations)
 		{
-			var fullAssemblyPath = Path.Combine(executionAssemblyDirectory, assemblyPath);
+			var fullAssemblyPath = Path.Combine(executionAssemblyDirectory, config.Path);
 			var assembly = Assembly.LoadFrom(fullAssemblyPath);
 			var serviceContextBuilderType = assembly.GetExportedTypes().Single(t => t.IsClass && TypeIsSubType(t, typeof(MicroServiceContextBuilder)) && !t.IsAbstract);
-			var constructor = serviceContextBuilderType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, new Type[0]);
-			if (constructor == null)
+
+			object builder = null!;
+			if (string.IsNullOrWhiteSpace(config.Environment))
 			{
-				throw new ArgumentException($"Type {serviceContextBuilderType.FullName} doesn't have a constructor that has no input parameter.", nameof(assemblies));
+				var constructor = serviceContextBuilderType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, new Type[0]);
+				if (constructor == null)
+				{
+					throw new ArgumentException($"Type {serviceContextBuilderType.FullName} doesn't have a constructor that has no input parameters.", nameof(configurations));
+				}
+
+				builder = constructor.Invoke(new object[0]);
+			}
+			else
+			{
+				var constructor = serviceContextBuilderType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, new Type[] { typeof(string) });
+				if (constructor == null)
+				{
+					throw new ArgumentException($"Type {serviceContextBuilderType.FullName} doesn't have a constructor that takes environment string \"{config.Environment}\" as input parameter.", nameof(configurations));
+				}
+
+				builder = constructor.Invoke(new object[] { config.Environment });
 			}
 
-			var builder = constructor.Invoke(new object[0]);
 			var buildMethod = typeof(MicroServiceContextBuilder).GetMethod(nameof(MicroServiceContextBuilder.Build), BindingFlags.Public | BindingFlags.Instance)!;
 			var controllerTypes = assembly.GetExportedTypes().Where(t => t.IsClass && !t.IsAbstract && TypeIsSubType(t, typeof(Controller))).ToList();
-			ServiceProvider serviceProvider = (ServiceProvider)buildMethod.Invoke(builder, new object[] { controllerTypes })!;
+			ServiceProvider serviceProvider = (ServiceProvider)buildMethod.Invoke(builder, new object?[] { controllerTypes })!;
 
 			services.AddMvc().AddApplicationPart(assembly).AddControllersAsServices();
 			foreach (var controllerType in controllerTypes)

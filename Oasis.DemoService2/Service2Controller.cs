@@ -21,6 +21,6 @@ public sealed class Service2Controller : Controller
 	[HttpGet(nameof(Test))]
 	public ActionResult Test()
 	{
-		return Ok($"{_service.Description} {_databaseContext.Services.FromSql($"Select Name From Service").First().Name!}");
+		return Ok($"{_service.Description} {_databaseContext.Services.FromSql($"Select Name From Service").First().Name!} from {_service.Environment}");
 	}
 }

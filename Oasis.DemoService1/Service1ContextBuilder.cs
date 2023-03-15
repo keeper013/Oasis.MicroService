@@ -6,14 +6,10 @@ using Oasis.MicroService;
 
 public sealed class Service1ContextBuilder : MicroServiceContextBuilder
 {
-	protected override void Initialize(IServiceCollection serviceCollection)
+	protected override void Initialize(IServiceCollection serviceCollection, string? environment = null)
 	{
 		serviceCollection.AddSingleton<IService1DemoService>(new Service1DemoService());
-
-		var assembly = this.GetType().Assembly;
-		var configurationFilePath = assembly.Location.Replace(".dll", ".json");
-		var configuration = new ConfigurationBuilder().AddJsonFile(configurationFilePath).Build();
-		var service1Configuration = configuration.Get<Service1Configuration>()!;
+		var service1Configuration = this.GetConfiguration(this.GetType().Assembly.Location).Get<Service1Configuration>()!;
 		serviceCollection.AddSingleton<IService1Configuration>(service1Configuration);
 	}
 }

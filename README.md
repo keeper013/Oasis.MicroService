@@ -9,12 +9,15 @@ Of course a natual way to implement this would be to implement all such microser
 ### Micro Service Implementation
 To implement a microservice, the following steps should be carried out:
 1. Create a class library project, add reference to Oasis.MicroService. Define all controllers of the microservice in this project, add the web APIs inside the controllers. Define all necessary interfaces and implementations for features.
-2. Define the context builder classes for the microservice, which should inherit from abstract class *MicroServiceContextBuilder*. The class has an abstract method named *Initialize*, all dependency injections done with IServiceCollection should be done inside it (All controllers defined in the microservice assembly will be resolved using the service provider built from this IServiceController interface, but don't inject the controllers manually, it's taken care of automatically). Note that 1 microservice assembly should only contain 1 non-abstract class implementing *MicroServiceContextBuilder*.
+2. Define the context builder classes for the microservice, which should inherit from abstract class *MicroServiceContextBuilder*. There are several points to know for implementing the abstract class:
+- *MicroServiceContextBuilder* provides a virtual method named *GetConfiguration*, it's used for retrieving configuration file content and providing an instance of IConfigurationRoot interface. The method by default tries to find the the configuration file has the same name as the class library assembly, with ".json" as the expansion instead of ".dll", under the same path where the assembly is deployed.
+- *MicroServiceContextBuilder* supports environment specific configuration, to apply such configuration user should prepare a environment spcific configuration file (e.g. AssemblyName.EnvironmentName.json), then implement the contructor of *MicroServiceContextBuilder* that has an input parameter of string type for environment (if this constructor doesn't exist in the sub class of *MicroServiceContextBuilder*, environment specific configuration file won't be applied even if its deployed). Then define the environment name in the web host configuration (to be mentioned in the next section).
+- The class has an abstract method named *Initialize*, all dependency injections done with IServiceCollection should be done inside it (All controllers defined in the microservice assembly will be resolved using the service provider built from this IServiceController interface, but don't inject the controllers manually, it's taken care of automatically). Note that 1 microservice assembly should only contain 1 non-abstract class implementing *MicroServiceContextBuilder*.
 ### Web Host Implementation
 To implement the web API host, the following steps should be followed:
 1. Create a web API project, add reference to Oasis.MicroService.
-2. In configuration file, define a "*MicroServices*" section to list paths to all micro services to be plugged in.
-3. In Program.cs file, read that section from configuration file, use *AddMicroServices* API to register all micro services.
+2. In configuration file, define a "*MicroServices*" section to list paths together with environment names for all micro services to be plugged in.
+3. In Program.cs file, read the "*MicroServices*" section from configuration file, use *AddMicroServices* API to register all micro services.
 Then run the web API service, controllers defined in the microservices should be available.
 ## Demo Code
 In the demo code:

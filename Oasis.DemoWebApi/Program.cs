@@ -9,31 +9,23 @@ IConfiguration config = new ConfigurationBuilder()
     .Build();
 
 // Add microservices to the container.
-IList<string> microServiceAssemblies = new List<string>();
+var microServiceAssemblies = new List<MicroServiceConfiguration>();
 config.GetSection("MicroServices").Bind(microServiceAssemblies);
 builder.Services.AddMicroServices(microServiceAssemblies);
-
-// cors
-// var corsConfigConfig = new CorsConfiguration.CorsConfig();
-// config.GetSection(CorsConfiguration.CorsConfig.SectionName).Bind(corsConfigConfig);
-// var corsConfig = new CorsConfiguration(corsConfigConfig);
-// corsConfig.ConfigureServices(builder.Services);
-
-// byte[] formatter for protobuf budy
-// builder.Services.AddControllers(options => options.InputFormatters.Add(new ByteArrayInputFormatter()));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-var swaggerConfig = new SwaggerConfiguration();
-swaggerConfig.ConfigureServices(builder.Services);
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-swaggerConfig.Configure(app, app.Environment);
-
-// corsConfig.Configure(app, app.Environment);
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapControllers();
 
