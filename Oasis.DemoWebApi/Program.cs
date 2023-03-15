@@ -1,4 +1,3 @@
-using System.Reflection;
 using Oasis.MicroService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,9 +8,9 @@ IConfiguration config = new ConfigurationBuilder()
     .Build();
 
 // Add microservices to the container.
-var microServiceAssemblies = new List<MicroServiceConfiguration>();
-config.GetSection("MicroServices").Bind(microServiceAssemblies);
-builder.Services.AddMicroServices(microServiceAssemblies);
+var microServiceConfigurations = new List<MicroServiceConfiguration>();
+config.GetSection("MicroServices").Bind(microServiceConfigurations);
+builder.Services.AddMicroServices(microServiceConfigurations);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
