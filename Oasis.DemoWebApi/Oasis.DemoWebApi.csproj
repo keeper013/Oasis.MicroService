@@ -9,10 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0-preview.1.23112.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Oasis.MicroService\Oasis.MicroService.csproj" />
+    <PackageReference Include="Oasis.MicroService" Version="0.4.0" />
   </ItemGroup>
 
 </Project>
