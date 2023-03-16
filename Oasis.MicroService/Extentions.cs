@@ -24,31 +24,17 @@ public static class Extentions
 			var assembly = Assembly.LoadFrom(fullAssemblyPath);
 			var serviceContextBuilderType = assembly.GetExportedTypes().Single(t => t.IsClass && TypeIsSubType(t, typeof(MicroServiceContextBuilder)) && !t.IsAbstract);
 
-			object builder = null!;
-			if (string.IsNullOrWhiteSpace(config.Environment))
+			var constructor = serviceContextBuilderType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, new Type[0]);
+			if (constructor == null)
 			{
-				var constructor = serviceContextBuilderType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, new Type[0]);
-				if (constructor == null)
-				{
-					throw new ArgumentException($"Type {serviceContextBuilderType.FullName} doesn't have a constructor that has no input parameters.", nameof(configurations));
-				}
-
-				builder = constructor.Invoke(new object[0]);
+				throw new ArgumentException($"Type {serviceContextBuilderType.FullName} doesn't have a constructor that has no input parameters.", nameof(configurations));
 			}
-			else
-			{
-				var constructor = serviceContextBuilderType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, new Type[] { typeof(string) });
-				if (constructor == null)
-				{
-					throw new ArgumentException($"Type {serviceContextBuilderType.FullName} doesn't have a constructor that takes environment string \"{config.Environment}\" as input parameter.", nameof(configurations));
-				}
 
-				builder = constructor.Invoke(new object[] { config.Environment });
-			}
+			var builder = constructor.Invoke(new object[0]);
 
 			var buildMethod = typeof(MicroServiceContextBuilder).GetMethod(nameof(MicroServiceContextBuilder.Build), BindingFlags.Public | BindingFlags.Instance)!;
 			var controllerTypes = assembly.GetExportedTypes().Where(t => t.IsClass && !t.IsAbstract && TypeIsSubType(t, typeof(Controller))).ToList();
-			ServiceProvider serviceProvider = (ServiceProvider)buildMethod.Invoke(builder, new object?[] { controllerTypes })!;
+			ServiceProvider serviceProvider = (ServiceProvider)buildMethod.Invoke(builder, new object?[] { controllerTypes, assembly.Location, config.Environment })!;
 
 			services.AddMvc().AddApplicationPart(assembly).AddControllersAsServices();
 			foreach (var controllerType in controllerTypes)

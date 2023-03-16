@@ -7,22 +7,16 @@ using Microsoft.Extensions.DependencyInjection;
 public abstract class MicroServiceContextBuilder
 {
 	private readonly ServiceCollection _serviceCollection;
-	private readonly string? _environment;
 
 	protected MicroServiceContextBuilder()
-		: this(null)
-	{
-	}
-
-	protected MicroServiceContextBuilder(string? environment)
 	{
 		_serviceCollection = new ServiceCollection();
-		_environment = environment;
 	}
 
-	public ServiceProvider Build(IEnumerable<Type> controllerTypes)
+	public ServiceProvider Build(IEnumerable<Type> controllerTypes, string microServiceAssemblyLocation, string? environment)
 	{
-		this.Initialize(_serviceCollection, _environment);
+		var config = GetConfiguration(microServiceAssemblyLocation, environment);
+		this.Initialize(_serviceCollection, config);
 		foreach (var controllerType in controllerTypes)
 		{
 			_serviceCollection.AddTransient(controllerType, controllerType);
@@ -31,24 +25,24 @@ public abstract class MicroServiceContextBuilder
 		return _serviceCollection.BuildServiceProvider();
 	}
 
-	protected virtual IConfigurationRoot GetConfiguration(string microServiceAssemblyLocation)
+	protected virtual IConfigurationRoot? GetConfiguration(string microServiceAssemblyLocation, string? environment)
 	{
 		var mainConfigFilePrefix = microServiceAssemblyLocation.Substring(0, microServiceAssemblyLocation.Length - 4);
 		var mainConfigFilePath = $"{mainConfigFilePrefix}.json";
 		if (!File.Exists(mainConfigFilePath))
 		{
-			throw new FileLoadException("Missing configuration file for assembly.", microServiceAssemblyLocation);
+			return null;
 		}
 
 		var builder = new ConfigurationBuilder().AddJsonFile(mainConfigFilePath, false);
-		if (!string.IsNullOrWhiteSpace(_environment))
+		if (!string.IsNullOrWhiteSpace(environment))
 		{
-			var environmentConfigFilePath = $"{mainConfigFilePrefix}.{_environment}.json";
+			var environmentConfigFilePath = $"{mainConfigFilePrefix}.{environment}.json";
 			builder = builder.AddJsonFile(environmentConfigFilePath, false);
 		}
 
 		return builder.Build();
 	}
 
-	protected abstract void Initialize(IServiceCollection serviceCollection, string? environment = null);
+	protected abstract void Initialize(IServiceCollection serviceCollection, IConfigurationRoot? configuration);
 }
