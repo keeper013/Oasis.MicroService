@@ -1,4 +1,6 @@
 # Oasis.MicroService
+[![latest version](https://img.shields.io/nuget/v/Oasis.MicroService)](https://www.nuget.org/packages/Oasis.MicroService)
+[![downloads](https://img.shields.io/nuget/dt/Oasis.MicroService)](https://www.nuget.org/packages/Oasis.MicroService)
 ## Introduction
 Oasis.MicroService is a simple and supportive library that allows developers to deploy asp.net core web APIs as plugins in web API projects. Or, to be more straight forward, it helps developers to distribute web controller classes in class library projects instead of centralizing them the web API project. So one web API project may contain one or more such microservices, each has it's own folder, configuration files, and run time context. With the support of this library, software engineers will be able to easily deploy microservices dynamically in different web API hosts.
 

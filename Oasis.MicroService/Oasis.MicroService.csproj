@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>../Oasis.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Oasis.snk</AssemblyOriginatorKeyFile>
 	  <CodeAnalysisRuleSet>../StyleCop/Oasis.Default.ruleset</CodeAnalysisRuleSet>
     <Authors>Cui Ziqiang</Authors>
     <Version>0.4.0</Version>
