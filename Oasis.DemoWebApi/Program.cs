@@ -2,14 +2,9 @@ using Oasis.MicroService;
 
 var builder = WebApplication.CreateBuilder(args);
 
-IConfiguration config = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .AddEnvironmentVariables()
-    .Build();
-
 // Add microservices to the container.
 var microServiceConfigurations = new List<MicroServiceConfiguration>();
-config.GetSection("MicroServices").Bind(microServiceConfigurations);
+builder.Configuration.GetSection("MicroServices").Bind(microServiceConfigurations);
 builder.Services.AddMicroServices(microServiceConfigurations);
 
 builder.Services.AddControllers();
