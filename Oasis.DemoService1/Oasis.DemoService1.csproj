@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <None Include="Oasis.DemoService1.json">
+    <None Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Oasis.MicroService" Version="0.4.0" />
+    <PackageReference Include="Oasis.MicroService" Version="0.5.0" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add microservices to the container.
 var microServiceConfigurations = new List<MicroServiceConfiguration>();
 builder.Configuration.GetSection("MicroServices").Bind(microServiceConfigurations);
-builder.Services.AddMicroServices(microServiceConfigurations);
+builder.AddMicroServices(microServiceConfigurations);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

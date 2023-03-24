@@ -14,14 +14,45 @@ To implement a microservice, the following steps should be carried out:
 2. Define the context builder classes for the microservice, which should inherit from abstract class *MicroServiceContextBuilder*. There are several points to know for implementing the abstract class:
 - Note that 1 microservice assembly should only contain 1 non-abstract class implementing *MicroServiceContextBuilder*
 - The class has an abstract method named *Initialize*, all dependency injections should be done with its first input parameter of type IServiceCollection (All controllers defined in the microservice assembly will be resolved using the service provider built from this IServiceController interface, but don't inject the controllers manually, it's taken care of automatically).
-- The second parameter of *Initialize* is the configuration root read from the micro-service's path with default logic implemented in protected virtual method *GetConfiguration*. The method by default tries to find the the configuration file has the same name as the class library assembly, with ".json" as the expansion instead of ".dll", under the same path where the assembly is deployed. If such configuration file doesn't exist, value of this parameter will be null. It should be overriden if developers want customized configuration file reading logic.
-- *MicroServiceContextBuilder* supports environment specific configuration, to apply such configuration user should prepare a environment spcific configuration file (e.g. AssemblyName.json + AssemblyName.EnvironmentName.json for environment named as EnvironmentName). To use this feature, simply prepare such configuration files and define the environment name in the web host configuration (to be mentioned in the next section).
+- The second parameter of *Initialize* is the configuration root read from the micro-service's path with default logic implemented in protected virtual method *GetConfiguration*. The method by default tries to find the the configuration file has the same name *appsettings.json*, under the same path where the assembly is deployed. Environment specific configuration of *MicroServiceContextBuilder* works the same way as normal asp.net core applications, meaning config file *appsettings.Development.json* under the same folder will be taken when ASPNETCORE_ENVIRONMENT = Development, so long and so forth for other environments. This environment variable for micro-services are overridable by configuration at web host side (refer to the web host section). Note that such configuration files are considered optional by *Oasis.MicroService*, which is the same as normal asp.net core web api. If configuration file is compulsory for certain micro-services, some defensive coding can be done in the *Initialize* method. Method *GetConfiguration* is virtual for the possibility of customizing the configuration file reading behavior.
+```C#
+public sealed class Service1ContextBuilder : MicroServiceContextBuilder
+{
+	protected override void Initialize(IServiceCollection serviceCollection, IConfigurationRoot configuration)
+	{
+		serviceCollection.AddSingleton<IService1DemoService>(new Service1DemoService());
+		var service1Configuration = configuration.Get<Service1Configuration>();
+		if (service1Configuration == null)
+		{
+			throw new FileLoadException($"Configuration for {typeof(Service1Configuration)} missing", Path.GetFileName(this.GetType().Assembly.Location));
+		}
+
+		serviceCollection.AddSingleton<IService1Configuration>(service1Configuration);
+	}
+}
+```
 ### Web Host Implementation
 To implement the web API host, the following steps should be followed:
 1. Create a web API project, add reference to Oasis.MicroService.
-2. In configuration file, define a "*MicroServices*" section to list paths together with environment names for all micro services to be plugged in. This section contains a list of micro-service configuration items, each configures one micro-service. Each configuration item includes 2 properties: "*Path*" contains path of the micro-service, while "*Environment*" contains the environment name for environment specific configuration (it can be ignored or set empty if no environment specific configuration is required).
+2. In configuration file, define a "*MicroServices*" section to list paths together with environment names for all micro services to be plugged in. This section contains a list of micro-service configuration items, each configures one micro-service. Each configuration item includes 2 properties: "*Path*" contains path of the micro-service, while "*Environment*" contains the environment name for environment specific configuration (*Environment* parameter is optional, and overrides the value of ASPNETCORE_ENVIRONMENT set for web api host if specified).
+```json
+{
+	"MicroServices":[
+		{ "Path": "MicroServices/Service1/Oasis.DemoService1.dll" },
+		{ "Path": "MicroServices/Service2/Oasis.DemoService2.dll", "Environment": "Test" }
+	]
+}
+```
 3. In Program.cs file, read the "*MicroServices*" section from configuration file, use *AddMicroServices* API to register all micro services.
 Then run the web API service, controllers defined in the microservices should be available.
+```C#
+var builder = WebApplication.CreateBuilder(args);
+
+// Add microservices to the container.
+var microServiceConfigurations = new List<MicroServiceConfiguration>();
+builder.Configuration.GetSection("MicroServices").Bind(microServiceConfigurations);
+builder.AddMicroServices(microServiceConfigurations);
+```
 ## Demo Code
 In the demo code:
 - *Oasis.DemoService1* is one simple microservice to demonstrate the basics of implementing a microservice

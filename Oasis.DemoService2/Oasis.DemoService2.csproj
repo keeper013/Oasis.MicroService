@@ -2,14 +2,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.3" />
-    <PackageReference Include="Oasis.MicroService" Version="0.4.0" />
+    <PackageReference Include="Oasis.MicroService" Version="0.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Oasis.DemoService2.json">
+    <None Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Oasis.DemoService2.Test.json">
+    <None Include="appsettings.Test.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

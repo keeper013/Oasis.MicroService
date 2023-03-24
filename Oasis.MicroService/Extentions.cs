@@ -4,13 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public static class Extentions
 {
-	public static void AddMicroServices(this IServiceCollection services, IList<MicroServiceConfiguration> configurations)
+	public static void AddMicroServices(this WebApplicationBuilder builder, IList<MicroServiceConfiguration> configurations)
 	{
 		if (configurations == null || !configurations.Any())
 		{
@@ -21,6 +22,7 @@ public static class Extentions
 		foreach (var config in configurations)
 		{
 			var fullAssemblyPath = Path.Combine(executionAssemblyDirectory, config.Path);
+
 			var assembly = Assembly.LoadFrom(fullAssemblyPath);
 			var serviceContextBuilderType = assembly.GetExportedTypes().Single(t => t.IsClass && TypeIsSubType(t, typeof(MicroServiceContextBuilder)) && !t.IsAbstract);
 
@@ -30,12 +32,13 @@ public static class Extentions
 				throw new ArgumentException($"Type {serviceContextBuilderType.FullName} doesn't have a constructor that has no input parameters.", nameof(configurations));
 			}
 
-			var builder = constructor.Invoke(new object[0]);
+			var serviceContextBuilder = constructor.Invoke(new object[0]);
 
 			var buildMethod = typeof(MicroServiceContextBuilder).GetMethod(nameof(MicroServiceContextBuilder.Build), BindingFlags.Public | BindingFlags.Instance)!;
 			var controllerTypes = assembly.GetExportedTypes().Where(t => t.IsClass && !t.IsAbstract && TypeIsSubType(t, typeof(Controller))).ToList();
-			ServiceProvider serviceProvider = (ServiceProvider)buildMethod.Invoke(builder, new object?[] { controllerTypes, assembly.Location, config.Environment })!;
+			ServiceProvider serviceProvider = (ServiceProvider)buildMethod.Invoke(serviceContextBuilder, new object?[] { controllerTypes, Path.GetDirectoryName(assembly.Location), config.Environment ?? builder.Environment.EnvironmentName })!;
 
+			var services = builder.Services;
 			services.AddMvc().AddApplicationPart(assembly).AddControllersAsServices();
 			foreach (var controllerType in controllerTypes)
 			{
