@@ -11,25 +11,23 @@ Push-Location $dir
 # build demo web api host
 dotnet build -c $configuration Oasis.DemoWebApi/Oasis.DemoWebApi.csproj
 
-# publish service 1
-dotnet publish -c $configuration Oasis.DemoService1/Oasis.DemoService1.csproj
-
-# copy service 1 to web api
-if (Test-Path Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices/Service1) {
-	Remove-Item Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices/Service1 -Recurse -Force
+# remove deployed micro-services
+if (Test-Path Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices) {
+	Remove-Item Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices -Recurse -Force
 }
 
-Copy-Item -Path Oasis.DemoService1/bin/$configuration/net8.0/publish -Destination Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices/Service1 -Recurse
+# publish and copy empty demo service
+dotnet publish -c $configuration Oasis.EmptyDemoService/Oasis.EmptyDemoService.csproj
+Copy-Item -Path Oasis.EmptyDemoService/bin/$configuration/net8.0/publish -Destination Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices/EmptyDemoService -Recurse
 
-# publish service 2
-dotnet publish -c $configuration Oasis.DemoService2/Oasis.DemoService2.csproj
 
-# copy service 2 to web api
-if (Test-Path Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices/Service2) {
-	Remove-Item Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices/Service2 -Recurse -Force
-}
+# publish and copy simple demo service
+dotnet publish -c $configuration Oasis.SimpleDemoService/Oasis.SimpleDemoService.csproj
+Copy-Item -Path Oasis.SimpleDemoService/bin/$configuration/net8.0/publish -Destination Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices/SimpleDemoService -Recurse
 
-Copy-Item -Path Oasis.DemoService2/bin/$configuration/net8.0/publish -Destination Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices/Service2 -Recurse
-Copy-Item -Path Oasis.DemoService2/bin/$configuration/net8.0/publish/runtimes/win-x64/native/e_sqlite3.dll Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices/Service2
+# publish and copy demo service with sqlite
+dotnet publish -c $configuration Oasis.DemoServiceWithSqlite/Oasis.DemoServiceWithSqlite.csproj
+Copy-Item -Path Oasis.DemoServiceWithSqlite/bin/$configuration/net8.0/publish -Destination Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices/DemoServiceWithSqlite -Recurse
+Copy-Item -Path Oasis.DemoServiceWithSqlite/bin/$configuration/net8.0/publish/runtimes/win-x64/native/e_sqlite3.dll Oasis.DemoWebApi/bin/$configuration/net8.0/MicroServices/DemoServiceWithSqlite
 
 Pop-Location

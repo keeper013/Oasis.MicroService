@@ -5,9 +5,13 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oasis.DemoWebApi", "Oasis.DemoWebApi\Oasis.DemoWebApi.csproj", "{48A40442-8198-4164-8F39-AD3617FA48BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oasis.DemoService1", "Oasis.DemoService1\Oasis.DemoService1.csproj", "{2BAC6E23-27BA-44AC-9020-A0D552950585}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oasis.SimpleDemoService", "Oasis.SimpleDemoService\Oasis.SimpleDemoService.csproj", "{2BAC6E23-27BA-44AC-9020-A0D552950585}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oasis.DemoService2", "Oasis.DemoService2\Oasis.DemoService2.csproj", "{9A5156CA-8B13-442C-98A9-20099ECD5E9B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oasis.DemoServiceWithSqlite", "Oasis.DemoServiceWithSqlite\Oasis.DemoServiceWithSqlite.csproj", "{9A5156CA-8B13-442C-98A9-20099ECD5E9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oasis.EmptyDemoService", "Oasis.EmptyDemoService\Oasis.EmptyDemoService.csproj", "{41D5A79E-3B23-4D2A-9BB1-13E232174FF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oasis.CommonLibraryForDemoService", "Oasis.CommonLibraryForDemoService\Oasis.CommonLibraryForDemoService.csproj", "{F4CAC8DF-7B34-4231-9994-A66F6399FCAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +34,13 @@ Global
 		{9A5156CA-8B13-442C-98A9-20099ECD5E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A5156CA-8B13-442C-98A9-20099ECD5E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A5156CA-8B13-442C-98A9-20099ECD5E9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41D5A79E-3B23-4D2A-9BB1-13E232174FF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41D5A79E-3B23-4D2A-9BB1-13E232174FF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41D5A79E-3B23-4D2A-9BB1-13E232174FF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41D5A79E-3B23-4D2A-9BB1-13E232174FF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4CAC8DF-7B34-4231-9994-A66F6399FCAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4CAC8DF-7B34-4231-9994-A66F6399FCAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4CAC8DF-7B34-4231-9994-A66F6399FCAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4CAC8DF-7B34-4231-9994-A66F6399FCAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

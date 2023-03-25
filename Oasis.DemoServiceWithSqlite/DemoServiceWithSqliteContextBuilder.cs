@@ -1,18 +1,18 @@
-﻿namespace Oasis.DemoService2;
+﻿namespace Oasis.DemoServiceWithSqlite;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Oasis.MicroService;
 
-public sealed class Service2ContextBuilder : MicroServiceContextBuilder
+public sealed class DemoServiceWithSqliteContextBuilder : MicroServiceContextBuilder
 {
 	protected override void Initialize(IServiceCollection serviceCollection, IConfigurationRoot configuration)
 	{
 		var location = this.GetType().Assembly.Location;
 
 		var servicePath = Path.GetDirectoryName(location)!;
-		var config = configuration.Get<Service2Configuration>();
+		var config = configuration.Get<DemoServiceWithSqliteConfiguration>();
 		if (config == null)
 		{
 			throw new FileLoadException("Configuration file missing", Path.GetFileName(location));
@@ -22,6 +22,6 @@ public sealed class Service2ContextBuilder : MicroServiceContextBuilder
 		serviceCollection.AddDbContextPool<DatabaseContext>(
 			(provider, options) => options.UseSqlite($"Data Source={databasePath};"));
 
-		serviceCollection.AddSingleton<IService2DemoService>(new Service2DemoService(config.Environment));
+		serviceCollection.AddSingleton<IDemoServiceWithSqlite>(new DemoServiceWithSqlite(config.Environment));
 	}
 }

@@ -1,4 +1,4 @@
-namespace Oasis.DemoService2;
+namespace Oasis.DemoServiceWithSqlite;
 
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;

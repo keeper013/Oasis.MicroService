@@ -1,15 +1,15 @@
-namespace Oasis.DemoService2;
+namespace Oasis.DemoServiceWithSqlite;
 
-public interface IService2DemoService
+public interface IDemoServiceWithSqlite
 {
 	string Description { get; }
 
 	string? Environment { get; }
 }
 
-internal class Service2DemoService : IService2DemoService
+internal class DemoServiceWithSqlite: IDemoServiceWithSqlite
 {
-	public Service2DemoService(string? environment)
+	public DemoServiceWithSqlite(string? environment)
 	{
 		Environment = environment;
 	}

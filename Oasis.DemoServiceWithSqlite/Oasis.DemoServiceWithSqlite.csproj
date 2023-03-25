@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.3" />
-    <PackageReference Include="Oasis.MicroService" Version="0.5.0" />
+    <PackageReference Include="Oasis.MicroService" Version="0.6.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,9 +15,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Oasis.DemoService2.sqlite3">
+    <None Include="Oasis.DemoServiceWithSqlite.sqlite3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Oasis.CommonLibraryForDemoService\Oasis.CommonLibraryForDemoService.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
