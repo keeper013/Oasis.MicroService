@@ -66,9 +66,9 @@ In the demo code:
 - *Oasis.EmptyDemoService* is one empty micro-service that has no configuration to be included with wildcard character matching.
 - *Oasis.SimpleDemoService* is one simple micro-service to demonstrate basic usage of *Initialize* method and configuration file, and to be matched with wildcard character matching.
 - *Oasis.DemoServiceWithSqlite* is a micro-service to demonstrate configuraing database contexts in *Initialize* method and environment specific configuration, and to be matched without wildcard character matching.
-- *Oasis.CommonLibraryForDemoService* is a dependency class library referenced by all micro-services to demonstrate the usage of *Excluded* section and *IgnoreAssemblyLoadingErrors* flag.
+- *Oasis.CommonLibraryForDemoService* is a dependency class library referenced by all micro-services to demonstrate the usage of *Excluded* section and *IgnoreAssemblyLoadingErrors* flag in Oasis.MicroService configuration in appsettings.config for web api hosts.
 - *Oasis.DemoWebApi* is the web API host for hosting both micro-services
 To run the demo code, execute "*BuildForDemo.ps1*" file under root folder, it contains the steps to build/publish the projects and copy the binaries to relevant paths written in PowerShell script. Then debug *Oasis.DemoWebApi* project. Controller defined for service 1 is under path Service1/Test, controller defined for service 2 is under path Service2/Test
 ## Considerations
 - To protect the strong naming key, it is not uploaded in the public repository, for source code downloaders to compile Oasis.MicroService project, please generate a key name "Oasis.snk" under Oasis.MicroService folder, or delete the strong naming configuration in the project file.
-- Different micro-services may depend on the same packages, sometimes with different versions. So it's highly recommended that all dependency dlls are strong named, or else there will be assembly version conflicts among the micro-services deployed under the same host.
+- Different micro-services may depend on the same packages, sometimes with different versions. So it's highly recommended that all dependency dlls are strong named, or else there will be assembly version conflicts among the micro-services deployed under the same host (like in the sample code its preferred to strong name *Oasis.CommonLibraryForDemoService* assembly).
